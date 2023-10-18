@@ -1,0 +1,96 @@
+{
+  meta: {
+    req: {
+      url: '/500',
+      headers: {
+        'user-agent': 'PostmanRuntime/7.33.0',
+        accept: '*/*',
+        'postman-token': '5f39fccf-bac1-4d8c-8a50-cc520112c2ea',
+        host: 'localhost:4000',
+        'accept-encoding': 'gzip, deflate, br',
+        connection: 'keep-alive'
+      },
+      method: 'GET',
+      httpVersion: '1.1',
+      originalUrl: '/500',
+      query: {}
+    },
+    res: { statusCode: 500 },
+    responseTime: 0
+  },
+  level: 'error',
+  message: 'HTTP GET /500',
+  timestamp: '2023-10-16T11:59:28.907Z'
+}
+{
+  meta: {
+    req: {
+      url: '/error',
+      headers: {
+        'user-agent': 'PostmanRuntime/7.33.0',
+        accept: '*/*',
+        'postman-token': 'b720094b-329c-42bf-a44a-0a8679e9164b',
+        host: 'localhost:4000',
+        'accept-encoding': 'gzip, deflate, br',
+        connection: 'keep-alive'
+      },
+      method: 'GET',
+      httpVersion: '1.1',
+      originalUrl: '/error',
+      query: {}
+    },
+    res: { statusCode: 500 },
+    responseTime: 2
+  },
+  level: 'error',
+  message: 'HTTP GET /error',
+  timestamp: '2023-10-16T12:15:49.913Z'
+}
+{
+  meta: {
+    req: {
+      url: '/error',
+      headers: {
+        'user-agent': 'PostmanRuntime/7.33.0',
+        accept: '*/*',
+        'postman-token': '52a1403a-04d5-4eff-a703-d33125061af5',
+        host: 'localhost:4000',
+        'accept-encoding': 'gzip, deflate, br',
+        connection: 'keep-alive'
+      },
+      method: 'GET',
+      httpVersion: '1.1',
+      originalUrl: '/error',
+      query: {}
+    },
+    res: { statusCode: 500 },
+    responseTime: 3
+  },
+  level: 'error',
+  message: 'HTTP GET /error',
+  timestamp: '2023-10-16T12:18:25.277Z'
+}
+{
+  meta: {
+    req: {
+      url: '/error',
+      headers: {
+        'user-agent': 'PostmanRuntime/7.33.0',
+        accept: '*/*',
+        'postman-token': '15611b10-4282-4261-afc6-acf99be33dbf',
+        host: 'localhost:4000',
+        'accept-encoding': 'gzip, deflate, br',
+        connection: 'keep-alive'
+      },
+      method: 'GET',
+      httpVersion: '1.1',
+      originalUrl: '/error',
+      query: {}
+    },
+    res: { statusCode: 500 },
+    responseTime: 4
+  },
+  level: 'error',
+  message: 'HTTP GET /error',
+  timestamp: '2023-10-16T12:25:00.103Z'
+}
