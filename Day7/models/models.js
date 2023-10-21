@@ -6,6 +6,7 @@ const Student = sequelize.define(
     ID: {
       type: DataTypes.INTEGER,
       primaryKey: true,
+      autoIncrement: true,
     },
     FirstName: {
       type: DataTypes.STRING,
@@ -19,7 +20,5 @@ const Student = sequelize.define(
     tableName: "Students",
   }
 );
-
-console.log('meki kara')
 
 global.Student = Student;
