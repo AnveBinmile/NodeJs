@@ -1,7 +1,6 @@
 const responseHandler = require("../core/responseHandlers");
 const { RESPONSE_CODES, RESPONSE_MESSAGES } = require("../core/constants");
 
-
 const {
   getAllStudentsFromDB,
   insertStudentIntoDB,
@@ -9,6 +8,11 @@ const {
   deleteStudentIntoDB,
   paginationInDB,
 } = require("../dbLayer/dbLayer");
+
+const Joi = require("joi");
+const idSchema = Joi.number().integer();
+const firstNameSchema = Joi.string();
+const markSchema = Joi.number();
 
 const getStudentDataService = async (res) => {
   try {
@@ -41,8 +45,7 @@ const getPageWiseData = async (req, res) => {
       res,
       message: RESPONSE_MESSAGES.FETCHED,
     });
-  }
-  else{
+  } else {
     responseHandler({
       statusCode: RESPONSE_CODES.SUCCESS_NO_CONTENT,
       error: false,
@@ -54,6 +57,16 @@ const getPageWiseData = async (req, res) => {
 
 const insertStudentDataService = async (req, res) => {
   try {
+    const { ID, FirstName, MARKS } = req.body;
+    console.log('Marks ',FirstName, MARKS,ID);
+    if(firstNameSchema.validate(FirstName).error  || idSchema.validate(ID).error || markSchema.validate(MARKS).error){
+        return responseHandler({
+          statusCode:RESPONSE_CODES.FAILURE_FORBIDDEN_ACCESS,
+          error:false,
+          res,
+          message:RESPONSE_MESSAGES.VALIDATION_ERROR
+        })
+    }
     const student = await insertStudentIntoDB(req.body);
     if (student !== null) {
       responseHandler({
