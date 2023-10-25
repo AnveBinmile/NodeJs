@@ -1,38 +1,65 @@
+const to = require("await-to-js").default;
+
+const paginationInDB = async (req) => {
+  const page = parseInt(req.query.page);
+  const limit = parseInt(req.query.limit);
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  const newUsers = {};
+  newUsers.next = {
+    page: page + 1,
+    limit: limit,
+  };
+
+  newUsers.previous = {
+    page: page - 1,
+    limit: limit,
+  };
+
+  const [error,data] = await to(Student.findAll());
+
+
+
+  newUsers.count = data.length;
+
+  if(page<1 || startIndex>=data.length){
+    return error;
+  }
+
+  newUsers.newUsers = data.slice(startIndex, endIndex);
+
+  return newUsers;
+};
+
 const getAllStudentsFromDB = async () => {
   const students = await Student.findAll();
   return students;
 };
 
-const userExists = async (data) => {
-  const user = await Student.findOne({
-    where: {
-      ID: data.ID,
-      FirstName: data.FirstName,
-      MARKS: data.MARKS,
-    },
-  });
+const insertStudentIntoDB = async (data) => {
+  const studentData = {
+    ID: data.ID,
+    FirstName: data.FirstName,
+    MARKS: data.MARKS,
+  };
 
-  if (user) return true;
-  return false;
-};
+  const [error, student] = await to(Student.create(studentData));
+  if (error) {
+    return null;
+  }
 
-const insertStudentIntoDB = async (req, res) => {
-  const student = await Student.create({
-    ID: req.body.ID,
-    FirstName: req.body.FirstName,
-    MARKS: req.body.MARKS,
-  });
   student.save();
   return student;
 };
 
 const updateStudentIntoDB = async (data) => {
-  console.log(data);
-  const student = await Student.findOne({
-    where: {
-      ID: data.ID,
-    },
-  });
+  const [error, student] = await to(
+    Student.findOne({
+      where: {
+        ID: data.ID,
+      },
+    })
+  );
 
   if (student) {
     if (data.FirstName) {
@@ -50,15 +77,19 @@ const updateStudentIntoDB = async (data) => {
 };
 
 const deleteStudentIntoDB = async (data) => {
-  const student = await Student.findOne({
-    where: {
-      ID: data.ID,
-    },
-  });
+  const [error, student] = await to(
+    Student.findOne({
+      where: {
+        ID: data.ID,
+      },
+    })
+  );
+
   if (student) {
     await student.destroy();
     return true;
   }
+
   return false;
 };
 
@@ -67,5 +98,5 @@ module.exports = {
   insertStudentIntoDB,
   updateStudentIntoDB,
   deleteStudentIntoDB,
-  userExists,
+  paginationInDB,
 };

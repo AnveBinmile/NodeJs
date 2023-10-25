@@ -1,35 +1,28 @@
 const responseHandler = require("../core/responseHandlers");
+const { RESPONSE_CODES, RESPONSE_MESSAGES } = require("../core/constants");
+
 
 const {
   getAllStudentsFromDB,
   insertStudentIntoDB,
   updateStudentIntoDB,
   deleteStudentIntoDB,
-  userExists,
+  paginationInDB,
 } = require("../dbLayer/dbLayer");
 
 const getStudentDataService = async (res) => {
   try {
-    if (userExists) {
+    getAllStudentsFromDB().then((data) => {
       responseHandler({
-        statusCode: 204,
+        statusCode: RESPONSE_CODES.SUCCESS_NO_CONTENT,
         data: data,
         res: res,
-        message: "successfully data fetched",
+        message: RESPONSE_MESSAGES.FETCHED_NOT_FOUND,
       });
-    } else {
-      getAllStudentsFromDB().then((data) => {
-        responseHandler({
-          statusCode: 200,
-          data: data,
-          res: res,
-          message: "successfully data fetched",
-        });
-      });
-    }
+    });
   } catch (err) {
     responseHandler({
-      statusCode: 404,
+      statusCode: RESPONSE_CODES.FAILURE_INT_SERVER_ERROR,
       error: true,
       res,
       message: err.message,
@@ -37,28 +30,48 @@ const getStudentDataService = async (res) => {
   }
 };
 
+const getPageWiseData = async (req, res) => {
+  // try {
+  const result = await paginationInDB(req);
+  if (result) {
+    responseHandler({
+      statusCode: RESPONSE_CODES.SUCCESS_OK,
+      error: false,
+      data: result,
+      res,
+      message: RESPONSE_MESSAGES.FETCHED,
+    });
+  }
+  else{
+    responseHandler({
+      statusCode: RESPONSE_CODES.SUCCESS_NO_CONTENT,
+      error: false,
+      res,
+      message: RESPONSE_MESSAGES.FETCHED_NOT_FOUND,
+    });
+  }
+};
+
 const insertStudentDataService = async (req, res) => {
   try {
-    const exist = await userExists(req.body);
-    if (!exist) {
-      insertStudentIntoDB(req, res).then((data) => {
-        responseHandler({
-          statusCode: 201,
-          data: data,
-          res: res,
-          message: "insert student data successfully",
-        });
+    const student = await insertStudentIntoDB(req.body);
+    if (student !== null) {
+      responseHandler({
+        statusCode: RESPONSE_CODES.SUCCESS_CREATED,
+        data: student,
+        res: res,
+        message: RESPONSE_MESSAGES.INSERT_SUCCESS,
       });
     } else {
       responseHandler({
-        statusCode: 201,
+        statusCode: RESPONSE_CODES.SUCCESS_NO_CONTENT,
         res,
-        message: "already exists",
+        message: RESPONSE_MESSAGES.INSERT_AL_EXIST,
       });
     }
   } catch (err) {
     responseHandler({
-      statusCode: 500,
+      statusCode: RESPONSE_CODES.FAILURE_INT_SERVER_ERROR,
       error: true,
       res,
       message: err.message,
@@ -72,21 +85,21 @@ const updateStudentDataService = async (req, res) => {
     console.log(result);
     if (result !== null) {
       responseHandler({
-        statusCode: 200,
+        statusCode: RESPONSE_CODES.SUCCESS_OK,
         data: result,
         res,
-        message: "updated student data",
+        message: RESPONSE_MESSAGES.UPDATE_SUCCESS,
       });
     } else {
       responseHandler({
-        statusCode: 200,
+        statusCode: RESPONSE_CODES.SUCCESS_NO_CONTENT,
         res,
-        message:"student doesnt exist",
+        message: RESPONSE_MESSAGES.FETCHED_NOT_FOUND,
       });
     }
   } catch (err) {
     responseHandler({
-      statusCode: 500,
+      statusCode: RESPONSE_CODES.FAILURE_INT_SERVER_ERROR,
       error: true,
       res,
       message: err.message,
@@ -97,24 +110,23 @@ const updateStudentDataService = async (req, res) => {
 const deleteStudentDataService = async (req, res) => {
   try {
     const result = await deleteStudentIntoDB(req.body);
-    if(result){
+    if (result) {
       responseHandler({
-        statusCode: 200,
+        statusCode: RESPONSE_CODES.SUCCESS_OK,
         data: req.body,
         res,
-        message: "delete student data",
+        message: RESPONSE_MESSAGES.DELETE_SUCCESS,
       });
-    }
-    else{
+    } else {
       responseHandler({
-        statusCode: 200,
+        statusCode: RESPONSE_CODES.SUCCESS_OK,
         res,
-        message: "student not found",
+        message: RESPONSE_MESSAGES.FETCHED_NOT_FOUND,
       });
     }
   } catch (err) {
     responseHandler({
-      statusCode: 500,
+      statusCode: RESPONSE_CODES.FAILURE_INT_SERVER_ERROR,
       error: true,
       res,
       message: err.message,
@@ -127,4 +139,5 @@ module.exports = {
   insertStudentDataService,
   updateStudentDataService,
   deleteStudentDataService,
+  getPageWiseData,
 };

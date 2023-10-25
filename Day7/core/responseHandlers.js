@@ -1,10 +1,15 @@
-const responseHandler = ({statusCode,message='',error=false,res,data=[]}) => {
-  console.log('messs',message);
+const responseHandler = ({
+  statusCode,
+  message = "",
+  error = false,
+  res,
+  data = [],
+}) => {
   res.json({
-    error:error,
+    error: error,
     statusCode: statusCode,
     message: message,
-    data:data
+    data: data,
   });
 };
 

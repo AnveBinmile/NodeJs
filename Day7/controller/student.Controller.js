@@ -3,31 +3,30 @@ const {
   insertStudentDataService,
   updateStudentDataService,
   deleteStudentDataService,
+  getPageWiseData
 } = require("../service/service.student");
 
+
+
+
+const getPageWiseController = async (req, res) => {
+  getPageWiseData(req,res);
+};
+
 const getAllStudentsController = async (req, res) => {
-  try {
-    getStudentDataService(res);
-  } catch (error) {}
+  await getStudentDataService(res);
 };
 
 const insertStudentController = async (req, res) => {
-  try {
-    console.log("insert");
-    insertStudentDataService(req,res);
-  } catch (err) {}
+  await insertStudentDataService(req, res);
 };
 
 const updateStudentController = async (req, res) => {
-  try {
-    updateStudentDataService(req,res);
-  } catch (err) {}
+  await updateStudentDataService(req, res);
 };
 
 const deleteStudentController = async (req, res) => {
-  try {
-    deleteStudentDataService(req,res);
-  } catch (err) {}
+  await deleteStudentDataService(req, res);
 };
 
 module.exports = {
@@ -35,4 +34,5 @@ module.exports = {
   insertStudentController,
   updateStudentController,
   deleteStudentController,
+  getPageWiseController
 };
