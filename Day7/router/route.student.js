@@ -3,11 +3,11 @@ const {
   insertStudentController,
   updateStudentController,
   deleteStudentController,
-  getPageWiseController
+  getPageWiseController,
+  
 } = require("../controller/student.Controller");
 
 app.get("/students", getAllStudentsController);
-app.get('/page',getPageWiseController)
 
 app.post("/add", insertStudentController);
 

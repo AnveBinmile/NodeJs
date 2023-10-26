@@ -1,5 +1,6 @@
 const responseHandler = require("../core/responseHandlers");
 const { RESPONSE_CODES, RESPONSE_MESSAGES } = require("../core/constants");
+const to = require("await-to-js").default;
 
 const {
   getAllStudentsFromDB,
@@ -9,21 +10,27 @@ const {
   paginationInDB,
 } = require("../dbLayer/dbLayer");
 
-const Joi = require("joi");
-const idSchema = Joi.number().integer();
-const firstNameSchema = Joi.string();
-const markSchema = Joi.number();
-
-const getStudentDataService = async (res) => {
+const getStudentDataService = async (req, res) => {
   try {
-    getAllStudentsFromDB().then((data) => {
+    const { sort = "id", order = "ASC", ...filter } = req.query || {};
+    const [error, data] = await to(
+      getAllStudentsFromDB(sort, order,filter)
+    );
+    if (data) {
       responseHandler({
-        statusCode: RESPONSE_CODES.SUCCESS_NO_CONTENT,
+        statusCode: RESPONSE_CODES.SUCCESS_OK,
         data: data,
         res: res,
-        message: RESPONSE_MESSAGES.FETCHED_NOT_FOUND,
+        message: RESPONSE_MESSAGES.FETCHED,
       });
-    });
+    } else {
+      responseHandler({
+        statusCode: RESPONSE_CODES.FAILURE_NOT_FOUND,
+        data: data,
+        res: res,
+        message: error.message,
+      });
+    }
   } catch (err) {
     responseHandler({
       statusCode: RESPONSE_CODES.FAILURE_INT_SERVER_ERROR,
@@ -35,12 +42,10 @@ const getStudentDataService = async (res) => {
 };
 
 const getPageWiseData = async (req, res) => {
-  // try {
   const result = await paginationInDB(req);
   if (result) {
     responseHandler({
       statusCode: RESPONSE_CODES.SUCCESS_OK,
-      error: false,
       data: result,
       res,
       message: RESPONSE_MESSAGES.FETCHED,
@@ -56,93 +61,56 @@ const getPageWiseData = async (req, res) => {
 };
 
 const insertStudentDataService = async (req, res) => {
-  try {
-    const { ID, FirstName, MARKS } = req.body;
-    console.log('Marks ',FirstName, MARKS,ID);
-    if(firstNameSchema.validate(FirstName).error  || idSchema.validate(ID).error || markSchema.validate(MARKS).error){
-        return responseHandler({
-          statusCode:RESPONSE_CODES.FAILURE_FORBIDDEN_ACCESS,
-          error:false,
-          res,
-          message:RESPONSE_MESSAGES.VALIDATION_ERROR
-        })
-    }
-    const student = await insertStudentIntoDB(req.body);
-    if (student !== null) {
-      responseHandler({
-        statusCode: RESPONSE_CODES.SUCCESS_CREATED,
-        data: student,
-        res: res,
-        message: RESPONSE_MESSAGES.INSERT_SUCCESS,
-      });
-    } else {
-      responseHandler({
-        statusCode: RESPONSE_CODES.SUCCESS_NO_CONTENT,
-        res,
-        message: RESPONSE_MESSAGES.INSERT_AL_EXIST,
-      });
-    }
-  } catch (err) {
+  const [error, student] = await to(insertStudentIntoDB(req.body));
+  if (!error) {
     responseHandler({
-      statusCode: RESPONSE_CODES.FAILURE_INT_SERVER_ERROR,
-      error: true,
+      statusCode: RESPONSE_CODES.SUCCESS_CREATED,
+      data: student,
+      res: res,
+      message: RESPONSE_MESSAGES.INSERT_SUCCESS,
+    });
+  } else {
+    responseHandler({
+      statusCode: RESPONSE_CODES.SUCCESS_NO_CONTENT,
       res,
-      message: err.message,
+      message: error,
     });
   }
 };
 
 const updateStudentDataService = async (req, res) => {
-  try {
-    const result = await updateStudentIntoDB(req.body);
-    console.log(result);
-    if (result !== null) {
-      responseHandler({
-        statusCode: RESPONSE_CODES.SUCCESS_OK,
-        data: result,
-        res,
-        message: RESPONSE_MESSAGES.UPDATE_SUCCESS,
-      });
-    } else {
-      responseHandler({
-        statusCode: RESPONSE_CODES.SUCCESS_NO_CONTENT,
-        res,
-        message: RESPONSE_MESSAGES.FETCHED_NOT_FOUND,
-      });
-    }
-  } catch (err) {
+  const [error, result] = await to(updateStudentIntoDB(req.body));
+  if (!error) {
     responseHandler({
-      statusCode: RESPONSE_CODES.FAILURE_INT_SERVER_ERROR,
-      error: true,
+      statusCode: RESPONSE_CODES.SUCCESS_OK,
+      data: result,
       res,
-      message: err.message,
+      message: RESPONSE_MESSAGES.UPDATE_SUCCESS,
+    });
+  } else {
+    responseHandler({
+      statusCode: RESPONSE_CODES.SUCCESS_NO_CONTENT,
+      res,
+      message: error.message,
     });
   }
 };
 
 const deleteStudentDataService = async (req, res) => {
-  try {
-    const result = await deleteStudentIntoDB(req.body);
-    if (result) {
-      responseHandler({
-        statusCode: RESPONSE_CODES.SUCCESS_OK,
-        data: req.body,
-        res,
-        message: RESPONSE_MESSAGES.DELETE_SUCCESS,
-      });
-    } else {
-      responseHandler({
-        statusCode: RESPONSE_CODES.SUCCESS_OK,
-        res,
-        message: RESPONSE_MESSAGES.FETCHED_NOT_FOUND,
-      });
-    }
-  } catch (err) {
+  const [error, result] = await to(deleteStudentIntoDB(req.body));
+  if (error) {
     responseHandler({
-      statusCode: RESPONSE_CODES.FAILURE_INT_SERVER_ERROR,
-      error: true,
+      statusCode: RESPONSE_CODES.SUCCESS_OK,
+      data: req.body,
       res,
-      message: err.message,
+
+      message: RESPONSE_MESSAGES.DELETE_SUCCESS,
+    });
+  } else {
+    responseHandler({
+      statusCode: RESPONSE_CODES.SUCCESS_OK,
+      res,
+      message: error.message,
     });
   }
 };
