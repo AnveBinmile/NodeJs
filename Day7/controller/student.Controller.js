@@ -20,6 +20,7 @@ const getAllStudentsController = async (req, res) => {
     order = "ASC",
     page = 1,
     limit = 10,
+    keyword,
     ...filter
   } = req.query;
   const error =

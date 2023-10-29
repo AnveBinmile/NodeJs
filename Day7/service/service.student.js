@@ -1,7 +1,11 @@
 const responseHandler = require("../core/responseHandlers");
-const { RESPONSE_CODES, RESPONSE_MESSAGES } = require("../core/constants");
+const {
+  RESPONSE_CODES,
+  RESPONSE_MESSAGES,
+  COLUMN_NAMES,
+} = require("../core/constants");
 const to = require("await-to-js").default;
-const {Op}= require('@sequelize/core');
+const { Op } = require("@sequelize/core");
 
 const {
   getAllStudentsFromDB,
@@ -16,22 +20,38 @@ const getStudentDataService = async (req, res) => {
     order = "ASC",
     page = 1,
     limit = 10,
+    keyword,
     ...filter
   } = req.query;
 
-  const mainFilter = {};
   try {
-    const [error, data] = await to(getAllStudentsFromDB(sort, order, filter));
+    const keywordSearchObj = [];
+
+    for (let column of COLUMN_NAMES) {
+      const condition = {};
+      condition[column] = {
+        [Op.like]: `%${keyword}%`,
+      };
+      keywordSearchObj.push(condition);
+    }
+    
+
+    const combinedFilter = {};
+    for (const key in filter) {
+      combinedFilter[key] = {
+        [Op.like]: `%${filter[key]}%`,
+      };
+    }
+
+    const [error, data] = await to(
+      // getAllStudentsFromDB(sort, order, combinedFilter)
+      getAllStudentsFromDB(sort, order, keywordSearchObj)
+    );
+
     if (data) {
       const startIndex = (page - 1) * limit;
       const endIndex = page * limit;
       const result = {};
-
-      for (const key in filter) {
-        mainFilter[key]={
-          [Op.like]:  `%${filter[key]}%`
-        };
-      }
 
       result.next = {
         page: Number(page) + 1,
@@ -70,8 +90,6 @@ const getStudentDataService = async (req, res) => {
       message: err.message,
     });
   }
-
-  const [error, data] = await to(getAllStudentsFromDB(sort, order, mainFilter));
 };
 
 const insertStudentDataService = async (req, res) => {

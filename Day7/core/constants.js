@@ -19,4 +19,9 @@ const RESPONSE_MESSAGES = {
   VALIDATION_ERROR: "Invalid types",
 };
 
-module.exports = { RESPONSE_CODES, RESPONSE_MESSAGES };
+const COLUMN_NAMES=[
+ "id","firstName","lastName","age","gender","phoneNumber","email"
+]
+
+
+module.exports = { RESPONSE_CODES, RESPONSE_MESSAGES, COLUMN_NAMES };

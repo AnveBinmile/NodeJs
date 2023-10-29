@@ -3,7 +3,11 @@ const { Op } = require("@sequelize/core");
 
 const getAllStudentsFromDB = async (sort, order, filter) => {
   return Student.findAll({
-    where: filter,
+    where:
+    {
+      // filter,
+      [Op.or]:filter
+    },
     order: [[sort, order]],
   });
 };
