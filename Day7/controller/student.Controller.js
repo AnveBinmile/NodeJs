@@ -3,7 +3,6 @@ const {
   insertStudentDataService,
   updateStudentDataService,
   deleteStudentDataService,
-  getPageWiseData,
 } = require("../service/service.student");
 const responseHandler = require("../core/responseHandlers");
 const {
@@ -13,21 +12,23 @@ const {
   fetchSchema,
   filterSchema,
 } = require("../schema/studentSchema");
-const { RESPONSE_CODES, RESPONSE_MESSAGES } = require("../core/constants");
-
-const getPageWiseController = async (req, res) => {
-  getPageWiseData(req, res);
-};
+const { RESPONSE_CODES } = require("../core/constants");
 
 const getAllStudentsController = async (req, res) => {
-  const { sort = "id", order = "ASC", ...placeholder } = req.query || {};
-  const error  =
-    fetchSchema.validate({ sort, order });
-  const error2 = filterSchema.validate(placeholder);
-  if (error || error2) {
+  const {
+    sort = "id",
+    order = "ASC",
+    page = 1,
+    limit = 10,
+    ...filter
+  } = req.query;
+  const error =
+    fetchSchema.validate({ sort, order }).error ??
+    filterSchema.validate(filter).error;
+  if (error) {
     return responseHandler({
       statusCode: RESPONSE_CODES.FAILURE_FORBIDDEN_ACCESS,
-      error: false,
+      error: true,
       res,
       message: error.message,
     });
@@ -79,5 +80,4 @@ module.exports = {
   insertStudentController,
   updateStudentController,
   deleteStudentController,
-  getPageWiseController,
 };

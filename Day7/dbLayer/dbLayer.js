@@ -1,44 +1,11 @@
 const to = require("await-to-js").default;
+const { Op } = require("@sequelize/core");
 
-const paginationInDB = async (req) => {
-  const page = parseInt(req.query.page);
-  const limit = parseInt(req.query.limit);
-  const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
-  const newUsers = {};
-  newUsers.next = {
-    page: page + 1,
-    limit: limit,
-  };
-
-  newUsers.previous = {
-    page: page - 1,
-    limit: limit,
-  };
-
-  const [error, data] = await to(Student.findAll());
-
-  newUsers.count = data.length;
-
-  if (page < 1 || startIndex >= data.length) {
-    return error;
-  }
-
-  newUsers.newUsers = data.slice(startIndex, endIndex);
-  return newUsers;
-};
-
-const getAllStudentsFromDB = async (sort, order,filter) => {
-  const [error, students] = await to(
-    Student.findAll({
-      where: filter,
-      order: [[sort, order]],
-    })
-  );
-
-  if (error) return null;
-
-  return students;
+const getAllStudentsFromDB = async (sort, order, filter) => {
+  return Student.findAll({
+    where: filter,
+    order: [[sort, order]],
+  });
 };
 
 const insertStudentIntoDB = async (data) => {
@@ -55,10 +22,10 @@ const updateStudentIntoDB = async (data) => {
 
 const deleteStudentIntoDB = (data) => {
   return Student.destroy({
-    where:{
-      id:data.id,
-    }
-  })
+    where: {
+      id: data.id,
+    },
+  });
 };
 
 module.exports = {
@@ -66,5 +33,4 @@ module.exports = {
   insertStudentIntoDB,
   updateStudentIntoDB,
   deleteStudentIntoDB,
-  paginationInDB,
 };

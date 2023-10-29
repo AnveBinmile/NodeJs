@@ -11,19 +11,24 @@ const fetchSchema = Joi.object({
     "email",
     "gender"
   ),
+  page: Joi.number().integer(),
+  limit: Joi.number().integer(),
 });
 
 const filterSchema = Joi.object({
-  id: Joi.number().integer().required(),
+  subject: Joi.string(),
+  id: Joi.number().integer(),
   firstName: Joi.string(),
   lastName: Joi.string(),
   email: Joi.string().email(),
   phoneNumber: Joi.string()
+    .min(10)
+    .messages({ "string.pattern.base": `Phone number must have 10 digits.` })
     .regex(
       /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
     )
-    .messages({ "string.pattern.base": `Phone number must have 10 digits.` })
-    .required(),
+    .messages({ message: `wrong format` })
+    ,
   age: Joi.number().integer(),
   gender: Joi.string().valid("male", "female", "other"),
 });
@@ -34,10 +39,13 @@ const insertSchema = Joi.object({
   lastName: Joi.string(),
   email: Joi.string().email().required(),
   phoneNumber: Joi.string()
+    .min(10)
+    .max(10)
+    .messages({ "string.pattern.base": `Phone number must have 10 digits.` })
     .regex(
       /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
     )
-    .messages({ "string.pattern.base": `Phone number must have 10 digits.` })
+    .messages({ message: `wrong format` })
     .required(),
   age: Joi.number().integer().required(),
   gender: Joi.string().valid("male", "female", "other"),

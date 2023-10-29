@@ -1,63 +1,77 @@
 const responseHandler = require("../core/responseHandlers");
 const { RESPONSE_CODES, RESPONSE_MESSAGES } = require("../core/constants");
 const to = require("await-to-js").default;
+const {Op}= require('@sequelize/core');
 
 const {
   getAllStudentsFromDB,
   insertStudentIntoDB,
   updateStudentIntoDB,
   deleteStudentIntoDB,
-  paginationInDB,
 } = require("../dbLayer/dbLayer");
 
 const getStudentDataService = async (req, res) => {
+  const {
+    sort = "id",
+    order = "ASC",
+    page = 1,
+    limit = 10,
+    ...filter
+  } = req.query;
+
+  const mainFilter = {};
   try {
-    const { sort = "id", order = "ASC", ...filter } = req.query || {};
-    const [error, data] = await to(
-      getAllStudentsFromDB(sort, order,filter)
-    );
+    const [error, data] = await to(getAllStudentsFromDB(sort, order, filter));
     if (data) {
+      const startIndex = (page - 1) * limit;
+      const endIndex = page * limit;
+      const result = {};
+
+      for (const key in filter) {
+        mainFilter[key]={
+          [Op.like]:  `%${filter[key]}%`
+        };
+      }
+
+      result.next = {
+        page: Number(page) + 1,
+        limit: limit,
+      };
+
+      result.previous = {
+        page: Number(page) - 1,
+        limit: limit,
+      };
+
+      if (page < 1 || startIndex >= data.length) {
+        return error;
+      }
+
+      result.count = data.length;
+
+      result.data = data.slice(startIndex, endIndex);
       responseHandler({
         statusCode: RESPONSE_CODES.SUCCESS_OK,
-        data: data,
-        res: res,
+        data: result,
+        res,
         message: RESPONSE_MESSAGES.FETCHED,
       });
     } else {
-      responseHandler({
+      return responseHandler({
         statusCode: RESPONSE_CODES.FAILURE_NOT_FOUND,
-        data: data,
         res: res,
         message: error.message,
       });
     }
   } catch (err) {
-    responseHandler({
-      statusCode: RESPONSE_CODES.FAILURE_INT_SERVER_ERROR,
-      error: true,
-      res,
+    return responseHandler({
+      statusCode: RESPONSE_CODES.FAILURE_NOT_FOUND,
+      res: res,
       message: err.message,
     });
   }
-};
 
-const getPageWiseData = async (req, res) => {
-  const result = await paginationInDB(req);
-  if (result) {
-    responseHandler({
-      statusCode: RESPONSE_CODES.SUCCESS_OK,
-      data: result,
-      res,
-      message: RESPONSE_MESSAGES.FETCHED,
-    });
-  } else {
-    responseHandler({
-      statusCode: RESPONSE_CODES.SUCCESS_NO_CONTENT,
-      error: false,
-      res,
-      message: RESPONSE_MESSAGES.FETCHED_NOT_FOUND,
-    });
-  }
+  const [error, data] = await to(getAllStudentsFromDB(sort, order, mainFilter));
 };
 
 const insertStudentDataService = async (req, res) => {
@@ -98,7 +112,8 @@ const updateStudentDataService = async (req, res) => {
 
 const deleteStudentDataService = async (req, res) => {
   const [error, result] = await to(deleteStudentIntoDB(req.body));
-  if (error) {
+  console.log(result);
+  if (!error) {
     responseHandler({
       statusCode: RESPONSE_CODES.SUCCESS_OK,
       data: req.body,
@@ -120,5 +135,4 @@ module.exports = {
   insertStudentDataService,
   updateStudentDataService,
   deleteStudentDataService,
-  getPageWiseData,
 };

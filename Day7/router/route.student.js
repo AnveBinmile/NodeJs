@@ -2,9 +2,7 @@ const {
   getAllStudentsController,
   insertStudentController,
   updateStudentController,
-  deleteStudentController,
-  getPageWiseController,
-  
+  deleteStudentController,  
 } = require("../controller/student.Controller");
 
 app.get("/students", getAllStudentsController);
