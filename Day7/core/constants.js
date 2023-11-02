@@ -17,6 +17,7 @@ const RESPONSE_MESSAGES = {
   UPDATE_SUCCESS: "Data updated successfully",
   DELETE_SUCCESS: "Data deleted successfully",
   VALIDATION_ERROR: "Invalid types",
+  REGISTER_SUCCESS:"user registered successfully",
 };
 
 const COLUMN_NAMES = [

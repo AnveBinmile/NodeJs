@@ -29,9 +29,13 @@ const userSignUpService = async (req, res) => {
     };
     const token = jwt.sign(user, SECRET_KEY);
     return responseHandler({
-      statusCode: RESPONSE_CODES.FAILURE_NOT_FOUND,
+      statusCode: RESPONSE_CODES.SUCCESS_CREATED,
       res: res,
-      message: token,
+      data: {
+        "user data": data,
+        "authToken": token,
+      },
+      message: RESPONSE_MESSAGES.REGISTER_SUCCESS,
     });
   } else {
     return responseHandler({
@@ -43,7 +47,7 @@ const userSignUpService = async (req, res) => {
 };
 
 const getStudentDataService = async (req, res) => {
-  console.log('SERVICE')
+  console.log("SERVICE");
   const {
     sort = "id",
     order = "ASC",

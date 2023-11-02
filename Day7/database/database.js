@@ -11,7 +11,7 @@ sequelize
   .then(() => {
     console.log("Connection has been established successfully.");
     sequelize
-      .sync({force: true})
+      .sync()
       .then(() => {
         console.log("Models have been synchronized with the database.");
       })
