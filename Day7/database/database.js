@@ -1,8 +1,6 @@
 const { Sequelize } = require("sequelize");
 const { database, user, password, host, dialect } = require("../config/config");
 
-
-
 const sequelize = new Sequelize(database, user, password, {
   host: host,
   dialect: dialect,
@@ -13,7 +11,7 @@ sequelize
   .then(() => {
     console.log("Connection has been established successfully.");
     sequelize
-      .sync()
+      .sync({force: true})
       .then(() => {
         console.log("Models have been synchronized with the database.");
       })

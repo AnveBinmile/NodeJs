@@ -1,9 +1,11 @@
 const {
   getStudentDataService,
   insertStudentDataService,
-  updateStudentDataService,
+  ,
   deleteStudentDataService,
-} = require("../service/service.student");
+  userSignUpService,updateStudentDataService
+  userSignIn
+} = require("../service/student.service");
 const responseHandler = require("../core/responseHandlers");
 const {
   insertSchema,
@@ -14,7 +16,16 @@ const {
 } = require("../schema/studentSchema");
 const { RESPONSE_CODES } = require("../core/constants");
 
+const userSignUpController = async(req,res)=>{
+  await userSignUpService(req,res);
+}
+
+const userSignInController = async(req,res)=>{
+   await userSignIn(req.body);
+}
+
 const getAllStudentsController = async (req, res) => {
+  console.log('CONTROLLER');
   const {
     sort = "id",
     order = "ASC",
@@ -34,6 +45,7 @@ const getAllStudentsController = async (req, res) => {
       message: error.message,
     });
   }
+
   await getStudentDataService(req, res);
 };
 
@@ -81,4 +93,6 @@ module.exports = {
   insertStudentController,
   updateStudentController,
   deleteStudentController,
+  userSignUpController,
+  userSignInController
 };

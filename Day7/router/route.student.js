@@ -2,10 +2,16 @@ const {
   getAllStudentsController,
   insertStudentController,
   updateStudentController,
-  deleteStudentController,  
+  deleteStudentController,
+  userSignUpController,
+  // userSignInController,
 } = require("../controller/student.Controller");
 
-app.get("/students", getAllStudentsController);
+const {authorizeUser}= require('../middleware/middleware')
+
+app.post("/register", userSignUpController);
+
+app.get("/students",authorizeUser,  getAllStudentsController);
 
 app.post("/add", insertStudentController);
 
