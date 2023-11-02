@@ -1,9 +1,9 @@
 const {
   getStudentDataService,
   insertStudentDataService,
-  ,
+  updateStudentDataService,
   deleteStudentDataService,
-  userSignUpService,updateStudentDataService
+  userSignUpService,
   userSignIn
 } = require("../service/student.service");
 const responseHandler = require("../core/responseHandlers");

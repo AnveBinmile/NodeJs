@@ -14,13 +14,11 @@ const db = mysql.createConnection({
 });
 
 
-
 app.get("/students", (req, res) => {
   const sql = "SELECT * FROM stu;";
   db.query(sql, (err, data) => {
     if (err) return res.json(err);
     console.log(data);
-
     res.json({ message: "STUDENT DATA", data });
   });
 });

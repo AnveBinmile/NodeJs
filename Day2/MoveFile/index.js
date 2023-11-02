@@ -13,8 +13,7 @@ const extractFileData = (data, folder, res) => {
   const fileName = fileNameData[0];
   const fileExtension = fileNameData[1];
   const date = new Date();
-  const newFileName =
-    fileName + date.getTime().toString() + "." + fileExtension;
+  const newFileName = fileName + date.getTime().toString() + "." + fileExtension;
   const size = data.size / 1000000;
   data.originalname = newFileName;
   fs.writeFileSync(`./uploads/${folder}/${newFileName}`, data.buffer);

@@ -16,9 +16,7 @@ fs.readFile("./public/file.txt", "utf-8", (error, data) => {
 });
 
 
-
 //Writing File
-
 fs.writeFileSync("./public/output.txt", "Anvesha Karn");
 
 const path = "./public/output.txt";

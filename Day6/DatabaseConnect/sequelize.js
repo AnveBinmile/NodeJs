@@ -7,25 +7,11 @@ const db = new sequelize({
   dialect: "mysql",
 });
 
-const User = db.define("user2", {
-  username: {
-    type: sequelize.STRING,
-    primaryKey: true,
-  },
-});
-
-db.sync()
+db.authenticate()
   .then(() => {
-    console.log("Database and tables created!");
-    return User.create({
-       username: "anvesha",
-    });
-  })
-  .then((anvesha)=>{
-    console.log('Anvesha created!');
+    console.log("Connection has been established successfully.");
   })
   .catch((err) => {
-    console.error("Error syncing database:", err);
+    console.error("Unable to connect to the database:", err);
   });
 
-module.exports = User;
