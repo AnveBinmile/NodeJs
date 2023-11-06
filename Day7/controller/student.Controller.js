@@ -25,7 +25,6 @@ const userSignInController = async(req,res)=>{
 }
 
 const getAllStudentsController = async (req, res) => {
-  console.log('CONTROLLER');
   const {
     sort = "id",
     order = "ASC",

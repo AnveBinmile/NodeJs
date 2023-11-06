@@ -4,7 +4,6 @@ const {
   updateStudentController,
   deleteStudentController,
   userSignUpController,
-  // userSignInController,
 } = require("../controller/student.Controller");
 
 const {authorizeUser}= require('../middleware/middleware')

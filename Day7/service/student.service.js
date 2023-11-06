@@ -47,7 +47,7 @@ const userSignUpService = async (req, res) => {
 };
 
 const getStudentDataService = async (req, res) => {
-  console.log("SERVICE");
+  // console.log("SERVICE");
   const {
     sort = "id",
     order = "ASC",

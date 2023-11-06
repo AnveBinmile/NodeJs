@@ -1,4 +1,3 @@
-// const { listUsersInDb } = require("../dbLayer/user.dbLayer");
 const { listUserService,createRoleService } = require("../service/user.service");
 
 const listUsersController = async (req, res) => {

@@ -4,7 +4,6 @@ const {RESPONSE_CODES,RESPONSE_MESSAGES}= require('../core/constants');
 const jwt = require('jsonwebtoken');
 
 const authorizeUser =async(req, res, next) => {
-    // console.log('REQ HEADERS ',req.headers);
   if (req.headers.authorization) {
     try {
       const token = req.headers.authorization;
@@ -20,6 +19,7 @@ const authorizeUser =async(req, res, next) => {
       });
     }
   }
+  next();
 };
 
 module.exports = {authorizeUser};

@@ -6,8 +6,6 @@ const Student = sequelize.define(
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true,
-      unique: true,
     },
     email: {
       type: DataTypes.STRING,
@@ -31,9 +29,6 @@ const Student = sequelize.define(
     },
     password:{
       type: DataTypes.STRING,
-    },
-    role:{
-      type:DataTypes.STRING,
     }
   },
   {
@@ -41,5 +36,6 @@ const Student = sequelize.define(
     tableName: "Students",
   }
 );
+
 
 global.Student = Student;

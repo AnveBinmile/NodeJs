@@ -5,12 +5,18 @@ const to = require("await-to-js").default;
 
 const listUserService = async (req, res) => {
   const [error, data] = await to(listUsersInDb());
-  console.log("DATA ", data);
   if (data) {
     responseHandler({
       error: RESPONSE_CODES.SUCCESS_OK,
       res,
       data: data,
+      message: data,
+    });
+  } else {
+    responseHandler({
+      error: RESPONSE_CODES.SUCCESS_OK,
+      res,
+      data: error,
       message: data,
     });
   }
@@ -28,4 +34,4 @@ const createRoleService = async (req, res) => {
   }
 };
 
-module.exports = { listUserService,createRoleService };
+module.exports = { listUserService, createRoleService };
