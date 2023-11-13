@@ -10,7 +10,7 @@ const {authorizeUser}= require('../middleware/middleware')
 
 app.post("/register", userSignUpController);
 
-app.get("/students",authorizeUser,  getAllStudentsController);
+app.get("/students",  getAllStudentsController);
 
 app.post("/add", insertStudentController);
 

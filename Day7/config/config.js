@@ -6,4 +6,9 @@ const dbconfig = {
   dialect: "mysql",
 };
 
-module.exports = dbconfig;
+
+const userConfig = {
+  emailUser:"beanbagger678@gmail.com",
+  emailPassword:"wdhkxewetcbvgefq"
+}
+module.exports = {dbconfig,userConfig};

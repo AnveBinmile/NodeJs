@@ -8,7 +8,6 @@ const to = require("await-to-js").default;
 const { Op } = require("@sequelize/core");
 const { SECRET_KEY } = require("../core/constants");
 const jwt = require("jsonwebtoken");
-
 const {
   getAllStudentsFromDB,
   insertStudentIntoDB,

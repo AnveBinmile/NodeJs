@@ -1,4 +1,5 @@
 const { DataTypes } = require("sequelize");
+const  sequelize = require('../database/database')
 
 const Student = sequelize.define(
   "Student",
@@ -38,4 +39,4 @@ const Student = sequelize.define(
 );
 
 
-global.Student = Student;
+module.exports = Student;

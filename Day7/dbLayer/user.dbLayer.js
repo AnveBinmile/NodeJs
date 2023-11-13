@@ -1,3 +1,5 @@
+const sequelize = require('../database/database')
+
 const listUsersInDb = () => {
   return sequelize.query(
     // 'SELECT * FROM Users LEFT JOIN Students ON Users.id=Students.id',
